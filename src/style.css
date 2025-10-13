@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities; 
+
+input:focus {
+  outline: none !important;
+  border-color: #eab308 !important; /* Tailwind yellow-500 */
+  box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.4); /* soft yellow glow */
+
+}
