@@ -13,7 +13,6 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
 
-  // redirect if not admin (use context first, fallback to localStorage)
   useEffect(() => {
     const tokenNow = token || localStorage.getItem("bl_token");
     const roleNow = role || localStorage.getItem("bl_role");
@@ -26,7 +25,6 @@ function AdminDashboard() {
       navigate("/");
       return;
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate, token, role]);
 
   const showToast = (text, ms = 2500) => {
@@ -42,18 +40,15 @@ function AdminDashboard() {
 
     setLoading(true);
     try {
-      // api instance adds Authorization header automatically via interceptor
       const res = await api.get(`/admin/rows/search`, {
         params: { batteryId: batteryId.trim() },
       });
 
-      // expect res.data to be an array of objects
       const rows = Array.isArray(res.data) ? res.data : [];
       setData(rows);
       if (!rows.length) showToast("No data found for that Battery ID");
     } catch (err) {
       console.error("Admin search error:", err?.response?.data || err.message);
-      // if 401/403, force logout & redirect
       if (err?.response?.status === 401 || err?.response?.status === 403) {
         showToast("Session expired. Redirecting to login...");
         setTimeout(() => {
@@ -100,7 +95,6 @@ function AdminDashboard() {
   };
 
   const handleLogout = () => {
-    // prefer context signOut if available
     if (signOut) signOut();
     else {
       localStorage.removeItem("bl_token");
@@ -110,79 +104,77 @@ function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center p-6">
-      <div className="w-full max-w-5xl bg-white p-6 rounded-lg shadow">
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center p-4 sm:p-6">
+      <div className="w-full max-w-6xl bg-white p-4 sm:p-6 rounded-lg shadow">
         <h2 className="text-2xl font-bold text-center mb-4">
           Hey Admin 👋 — enter the Battery ID
         </h2>
 
-        <div className="flex gap-3 mb-6 justify-center">
+        <div className="flex flex-col sm:flex-row gap-3 mb-6 justify-center w-full">
           <input
             type="text"
             value={batteryId}
             onChange={(e) => setBatteryId(e.target.value)}
             placeholder="Enter Battery ID"
-            className="border border-gray-300 rounded px-4 py-2 w-64"
+            className="border border-gray-300 rounded px-4 py-2 w-full sm:w-64"
           />
 
-          <button
-            onClick={handleSearch}
-            disabled={loading}
-            className="bg-yellow-500 text-white px-5 py-2 rounded hover:bg-yellow-600 disabled:opacity-60"
-          >
-            {loading ? "Searching..." : "Search"}
-          </button>
+          <div className="flex flex-wrap justify-center gap-2">
+            <button
+              onClick={handleSearch}
+              disabled={loading}
+              className="bg-yellow-500 text-white px-5 py-2 rounded hover:bg-yellow-600 disabled:opacity-60"
+            >
+              {loading ? "Searching..." : "Search"}
+            </button>
 
-          <button
-            onClick={handleDownload}
-            disabled={loading}
-            className="bg-slate-500 text-white px-5 py-2 rounded hover:bg-slate-700 disabled:opacity-60"
-          >
-            {loading ? "Downloading..." : "Download CSV"}
-          </button>
+            <button
+              onClick={handleDownload}
+              disabled={loading}
+              className="bg-slate-500 text-white px-5 py-2 rounded hover:bg-slate-700 disabled:opacity-60"
+            >
+              {loading ? "Downloading..." : "Download CSV"}
+            </button>
 
-          <button
-            onClick={handleLogout}
-            className="bg-black text-white px-5 py-2 rounded hover:bg-red-700"
-          >
-            Logout
-          </button>
+            <button
+              onClick={handleLogout}
+              className="bg-black text-white px-5 py-2 rounded hover:bg-red-700"
+            >
+              Logout
+            </button>
+          </div>
         </div>
 
-        {/* Table Section */}
-        <div>
+        <div className="overflow-x-auto">
           {data.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="min-w-full text-sm border border-gray-300">
-                <thead className="bg-gray-100 text-gray-700">
-                  <tr>
-                    {Object.keys(data[0]).map((key) => (
-                      <th key={key} className="px-3 py-2 border text-left font-semibold">
-                        {key}
-                      </th>
+            <table className="min-w-full text-sm border border-gray-300">
+              <thead className="bg-gray-100 text-gray-700">
+                <tr>
+                  {Object.keys(data[0]).map((key) => (
+                    <th key={key} className="px-3 py-2 border text-left font-semibold whitespace-nowrap">
+                      {key}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {data.map((row, i) => (
+                  <tr key={i} className="odd:bg-white even:bg-gray-50">
+                    {Object.keys(data[0]).map((k) => (
+                      <td key={k} className="px-3 py-2 border whitespace-nowrap">
+                        {row[k] ?? "-"}
+                      </td>
                     ))}
                   </tr>
-                </thead>
-                <tbody>
-                  {data.map((row, i) => (
-                    <tr key={i} className="odd:bg-white even:bg-gray-50">
-                      {Object.keys(data[0]).map((k) => (
-                        <td key={k} className="px-3 py-2 border">
-                          {row[k] ?? "-"}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           ) : (
             <p className="text-center text-gray-500">No data to display.</p>
           )}
         </div>
       </div>
 
-      {/* toast popup */}
       {toast && (
         <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-black text-white px-4 py-2 rounded shadow">
           {toast}
