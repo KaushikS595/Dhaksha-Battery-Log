@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api";
 import { useAuth } from "../../context/AuthContext";
@@ -31,6 +31,57 @@ function UserDashboard() {
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
   const [errors, setErrors] = useState({});
+
+  // Calculate duration when times change
+  useEffect(() => {
+    const start = form.chargeTimeInitial;
+    const end = form.chargeTimeFinal;
+
+    if (start && end) {
+      const dur = calculateDuration(start, end);
+      setForm((s) => ({ ...s, duration: dur }));
+      setErrors((prev) => {
+        const next = { ...prev };
+        // revalidate duration-related errors if any
+        if (next.duration) delete next.duration;
+        return next;
+      });
+    } else {
+      // if either time missing, clear duration
+      setForm((s) => ({ ...s, duration: "" }));
+    }
+  }, [form.chargeTimeInitial, form.chargeTimeFinal]);
+
+  // 🧠 Function to calculate duration between hh:mm strings
+  const calculateDuration = (startStr, endStr) => {
+    // Expecting "HH:MM" (24-hour) format from inputs
+    try {
+      const [sh, sm] = startStr.split(":").map(Number);
+      const [eh, em] = endStr.split(":").map(Number);
+
+      // create Date objects on same day
+      const start = new Date(1970, 0, 1, sh, sm, 0);
+      let end = new Date(1970, 0, 1, eh, em, 0);
+
+      // if end is earlier than start, assume next day
+      if (end < start) {
+        end.setDate(end.getDate() + 1);
+      }
+
+      const diffMs = end - start;
+      const totalMinutes = Math.round(diffMs / (1000 * 60));
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+
+      if (hours === 0 && minutes === 0) return "0 mins";
+      if (minutes === 0) return `${hours} hours`;
+      if (hours === 0) return `${minutes} mins`;
+      return `${hours} hours ${minutes} mins`;
+    } catch (err) {
+      console.error("Error calculating duration:", err);
+      return "";
+    }
+  };
 
   // Validate all fields
   function validateAll(values) {
@@ -96,15 +147,24 @@ function UserDashboard() {
 
   const inputCls = (field) =>
     `mt-1 block w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 ${
-      errors[field] ? "border-red-500 ring-red-200 focus:ring-red-400" : "border-gray-200"
+      errors[field]
+        ? "border-red-500 ring-red-200 focus:ring-red-400"
+        : "border-gray-200"
     }`;
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 flex items-center justify-center">
       <div className="w-full max-w-3xl bg-white rounded-xl shadow-md p-6">
-        <h2 className="text-2xl font-bold text-center mb-6">Battery Charging Log</h2>
+        <h2 className="text-2xl font-bold text-center mb-6">
+          Battery Charging Log
+        </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-6" noValidate autoComplete="off">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-6"
+          noValidate
+          autoComplete="off"
+        >
           {/* Battery ID and Date */}
           <div className="grid grid-cols-2 gap-4">
             <NoAutoFillInput
@@ -112,7 +172,6 @@ function UserDashboard() {
               name="id"
               value={form.id}
               onChange={handleChange}
-              placeholder="Enter battery ID"
               className={inputCls("id")}
               required
             />
@@ -149,7 +208,9 @@ function UserDashboard() {
 
           {/* Battery Voltage */}
           <div>
-            <div className="text-sm font-medium text-gray-700 mb-2">Battery Voltage (V) *</div>
+            <div className="text-sm font-medium text-gray-700 mb-2">
+              Battery Voltage (V) *
+            </div>
             <div className="grid grid-cols-2 gap-4">
               <NoAutoFillInput
                 label="Initial"
@@ -172,7 +233,12 @@ function UserDashboard() {
 
           {/* Charge Times */}
           <div>
-            <div className="text-sm font-medium text-gray-700 mb-2">Charging Time (hh:mm) *</div>
+            <div className="text-sm font-medium text-gray-700 mb-2">
+              Charging Time (HH:MM) *
+            </div>
+            <div className="text-sm font-medium text-gray-700 mb-2">
+              [Please enter time in 24-hour format]
+            </div>
             <div className="grid grid-cols-3 gap-4">
               <NoAutoFillInput
                 label="Initial"
@@ -196,6 +262,7 @@ function UserDashboard() {
                 value={form.duration}
                 onChange={handleChange}
                 className={inputCls("duration")}
+                readOnly
               />
             </div>
           </div>
@@ -203,7 +270,7 @@ function UserDashboard() {
           {/* Capacity, UIN, Name */}
           <div className="grid grid-cols-3 gap-4">
             <NoAutoFillInput
-              label="Capacity (mAh)"
+              label="Drone number"
               name="capacity"
               value={form.capacity}
               onChange={handleChange}
@@ -230,7 +297,9 @@ function UserDashboard() {
 
           {/* Physical Status */}
           <div>
-            <div className="text-sm font-medium text-gray-700 mb-2">Physical Status *</div>
+            <div className="text-sm font-medium text-gray-700 mb-2">
+              Physical Status *
+            </div>
             <div className="grid grid-cols-3 gap-4">
               <NoAutoFillInput
                 label="Temperature"
@@ -289,7 +358,9 @@ function UserDashboard() {
       {/* Toast popup */}
       {toast && (
         <div className="fixed left-1/2 transform -translate-x-1/2 bottom-8 z-50">
-          <div className="bg-black text-white px-4 py-2 rounded shadow">{toast}</div>
+          <div className="bg-black text-white px-4 py-2 rounded shadow">
+            {toast}
+          </div>
         </div>
       )}
     </div>
@@ -297,3 +368,5 @@ function UserDashboard() {
 }
 
 export default UserDashboard;
+
+//KAUSHIK.S 

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import logo from "../../assets/dhaksha-logo.jpg"; // Make sure the path is correct
+import logo from "../../assets/Dhaksha-Logo-03.png"; // Make sure the path is correct
 
 function Header() {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ function Header() {
           />
           <div>
             <h1 className="text-xl font-semibold tracking-wide uppercase">
-              Dhaksha Drones
+              Dhaksha Unmanned Systems Pvt Ltd.
             </h1>
             <p className="text-sm text-gray-300 -mt-1">
               Built to Fly, Engineered to Protect
