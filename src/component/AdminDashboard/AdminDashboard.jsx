@@ -123,7 +123,7 @@ function AdminDashboard() {
             <button
               onClick={handleSearch}
               disabled={loading}
-              className="bg-yellow-500 text-white px-5 py-2 rounded hover:bg-yellow-600 disabled:opacity-60"
+              className="bg-[#dee11e] text-black px-5 py-2 rounded disabled:opacity-60"
             >
               {loading ? "Searching..." : "Search"}
             </button>
@@ -138,7 +138,7 @@ function AdminDashboard() {
 
             <button
               onClick={handleLogout}
-              className="bg-black text-white px-5 py-2 rounded hover:bg-red-700"
+              className="bg-[#dee11e] text-black px-5 py-2 rounded hover:bg-red-700"
             >
               Logout
             </button>

@@ -161,8 +161,8 @@ function RegisterPage() {
         <button
           type="submit"
           disabled={loading}
-          className={`w-full mt-2 py-2 rounded text-white transition-colors duration-200 ${
-            loading ? "bg-gray-400 cursor-not-allowed" : "bg-black hover:bg-slate-700"
+          className={`w-full mt-2 py-2 rounded text-black transition-colors duration-200 ${
+            loading ? "bg-gray-400 cursor-not-allowed" : "bg-[#dee11e] hover:bg-slate-500"
           }`}
         >
           {loading ? (

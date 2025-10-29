@@ -94,7 +94,7 @@ function LoginPage() {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-black text-white py-2 rounded hover:bg-slate-700"
+          className="w-full bg-[#dee11e] text-black py-2 rounded hover:bg-slate-500"
         >
           Login
         </button>

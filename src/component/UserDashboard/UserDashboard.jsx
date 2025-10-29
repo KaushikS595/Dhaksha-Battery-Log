@@ -335,7 +335,7 @@ function UserDashboard() {
               className={`flex-1 py-2 rounded text-white ${
                 loading || !isValid()
                   ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-yellow-500 hover:bg-yellow-600"
+                  : "bg-[#dee11e] hover:bg-slate-500"
               }`}
             >
               {loading ? "Submitting..." : "Submit"}
@@ -347,7 +347,7 @@ function UserDashboard() {
                 signOut();
                 navigate("/");
               }}
-              className="flex-1 py-2 bg-black text-white rounded hover:bg-red-600"
+              className="flex-1 py-2 bg-[#dee11e] text-black rounded hover:bg-red-600"
             >
               Logout
             </button>

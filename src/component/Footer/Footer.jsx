@@ -1,6 +1,6 @@
 function Footer() {
   return (
-    <footer className="bg-black text-white text-center py-3 text-sm">
+    <footer className="bg-[#dee11e] text-black text-center py-3 text-sm">
       © {new Date().getFullYear()} Dhaksha Unmanned Systems Pvt Ltd. — Built to Fly, Engineered to
       Protect
     </footer>
