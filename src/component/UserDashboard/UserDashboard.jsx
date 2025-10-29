@@ -87,17 +87,18 @@ function UserDashboard() {
   function validateAll(values) {
     const e = {};
     Object.entries(values).forEach(([key, val]) => {
+      if (["others"].includes(key)) return;
       if (!val || String(val).trim() === "") {
         e[key] = "This field is required";
       }
     });
 
     // Extra numeric validation
-    ["chargeCurrent", "capacity"].forEach((key) => {
+    ["chargeCurrent", "battVoltInitial", "battVoltFinal"].forEach((key) => {
       if (values[key] && isNaN(Number(values[key]))) {
         e[key] = "Must be a number";
       }
-    });
+    }); 
 
     return e;
   }
@@ -267,15 +268,14 @@ function UserDashboard() {
             </div>
           </div>
 
-          {/* Capacity, UIN, Name */}
+          {/* Drone number, UIN, Name */}
           <div className="grid grid-cols-3 gap-4">
             <NoAutoFillInput
               label="Drone number"
-              name="capacity"
+              name="droneno"
               value={form.capacity}
               onChange={handleChange}
-              className={inputCls("capacity")}
-              required
+              className={inputCls("droneno")}
             />
             <NoAutoFillInput
               label="UIN of UAS"
@@ -283,7 +283,6 @@ function UserDashboard() {
               value={form.uin}
               onChange={handleChange}
               className={inputCls("uin")}
-              required
             />
             <NoAutoFillInput
               label="Responsible Person (Name)"
