@@ -14,7 +14,7 @@ const initialForm = {
   chargeTimeInitial: "",
   chargeTimeFinal: "",
   duration: "",
-  capacity: "",
+  droneno: "",
   temp: "",
   deformation: "",
   others: "",
@@ -273,7 +273,7 @@ function UserDashboard() {
             <NoAutoFillInput
               label="Drone number"
               name="droneno"
-              value={form.capacity}
+              value={form.droneno}
               onChange={handleChange}
               className={inputCls("droneno")}
             />
