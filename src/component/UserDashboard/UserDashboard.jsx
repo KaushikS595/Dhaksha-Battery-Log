@@ -301,22 +301,48 @@ function UserDashboard() {
               Physical Status *
             </div>
             <div className="grid grid-cols-3 gap-4">
-              <NoAutoFillInput
-                label="Temperature"
-                name="temp"
-                value={form.temp}
-                onChange={handleChange}
-                className={inputCls("temp")}
-                required
-              />
-              <NoAutoFillInput
-                label="Deformation"
-                name="deformation"
-                value={form.deformation}
-                onChange={handleChange}
-                className={inputCls("deformation")}
-                required
-              />
+              <div classNmae="flex flex-col">
+                <span className="text-base font-semibold text-black mt-1">
+                  Temperature *
+                </span>
+                <select
+                  name="temp"
+                  value={form.temp}
+                  onChange={handleChange}
+                  className={inputCls("temp")}
+                  required
+                >
+                  <option value="">Select Temperature</option>
+                  <option value="Normal">Normal</option>
+                  <option value="Overheat">Overheat</option>
+                </select>
+                {errors.temp && (
+                  <p className="text-red-500 text-xs mt-1">{errors.temp}</p>
+                )}
+              </div>
+
+              <div className="flex flex-col">
+                <span className="text-base font-semibold text-black mt-1">
+                  Deformation *
+                </span>
+                <select
+                  name="deformation"
+                  value={form.deformation}
+                  onChange={handleChange}
+                  className={inputCls("deformation")}
+                  required
+                >
+                  <option value="">Select deformation</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+                {errors.deformation && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.deformation}
+                  </p>
+                )}
+              </div>
+
               <NoAutoFillInput
                 label="Others (if any)"
                 name="others"
@@ -332,7 +358,7 @@ function UserDashboard() {
             <button
               type="submit"
               disabled={loading || !isValid()}
-              className={`flex-1 py-2 rounded text-white ${
+              className={`flex-1 py-2 rounded text-black ${
                 loading || !isValid()
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-[#dee11e] hover:bg-slate-500"
@@ -369,4 +395,4 @@ function UserDashboard() {
 
 export default UserDashboard;
 
-//KAUSHIK.S 
+//KAUSHIK.S
