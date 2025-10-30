@@ -271,14 +271,14 @@ function UserDashboard() {
           {/* Drone number, UIN, Name */}
           <div className="grid grid-cols-3 gap-4">
             <NoAutoFillInput
-              label="Drone number"
+              label="Drone number *"
               name="droneno"
               value={form.droneno}
               onChange={handleChange}
               className={inputCls("droneno")}
             />
             <NoAutoFillInput
-              label="UIN of UAS"
+              label="UIN of UAS *"
               name="uin"
               value={form.uin}
               onChange={handleChange}
