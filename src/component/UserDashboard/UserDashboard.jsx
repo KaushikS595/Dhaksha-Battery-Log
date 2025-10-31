@@ -87,7 +87,7 @@ function UserDashboard() {
   function validateAll(values) {
     const e = {};
     Object.entries(values).forEach(([key, val]) => {
-      if (["others"].includes(key)) return;
+      if (["others", "chargingCycle"].includes(key)) return;
       if (!val || String(val).trim() === "") {
         e[key] = "This field is required";
       }
@@ -195,7 +195,6 @@ function UserDashboard() {
               value={form.chargingCycle}
               onChange={handleChange}
               className={inputCls("chargingCycle")}
-              required
             />
             <NoAutoFillInput
               label="Charge Current (A)"
