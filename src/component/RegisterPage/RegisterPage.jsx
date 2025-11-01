@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api";
 import NoAutoFillInput from "../common/NoAutoFillInput";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function RegisterPage() {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ function RegisterPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // unified change handler — keys must match state fields (name, email, password, confirmPassword)
   const handleChange = (e) => {
@@ -21,7 +24,10 @@ function RegisterPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
 
     // clear password mismatch error while user types
-    if ((name === "password" || name === "confirmPassword") && error === "Passwords do not match") {
+    if (
+      (name === "password" || name === "confirmPassword") &&
+      error === "Passwords do not match"
+    ) {
       setError("");
     }
   };
@@ -32,7 +38,12 @@ function RegisterPage() {
     setSuccess("");
 
     // Basic client-side validation
-    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.password ||
+      !formData.confirmPassword
+    ) {
       setError("Please fill all fields.");
       // focus first empty
       const firstEmpty = Object.keys(formData).find((k) => !formData[k]);
@@ -70,7 +81,9 @@ function RegisterPage() {
     } catch (err) {
       console.error("Register error (full):", err);
       if (err?.response) {
-        setError(err.response.data?.message || "Server error during registration.");
+        setError(
+          err.response.data?.message || "Server error during registration."
+        );
       } else if (err.request) {
         setError("No response from server. Check your network/backend.");
       } else {
@@ -92,8 +105,12 @@ function RegisterPage() {
         <h2 className="text-2xl font-bold mb-4 text-center">Register here!</h2>
 
         {/* Messages */}
-        {error && <p className="text-red-500 text-center mb-3 text-sm">{error}</p>}
-        {success && <p className="text-yellow-500 text-center mb-3 text-sm">{success}</p>}
+        {error && (
+          <p className="text-red-500 text-center mb-3 text-sm">{error}</p>
+        )}
+        {success && (
+          <p className="text-yellow-500 text-center mb-3 text-sm">{success}</p>
+        )}
 
         {/* Hidden credential sinks (most browsers will consume saved credentials here) */}
         <input
@@ -136,33 +153,59 @@ function RegisterPage() {
         />
 
         {/* Password */}
-        <NoAutoFillInput
-          name="password"
-          type="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          autoComplete="new-password"
-          required
-        />
+        <div className="relative">
+          <NoAutoFillInput
+            name="password"
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            autoComplete="new-password"
+            className="w-full pr-10"
+            required
+          />
+
+          <span
+            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-600"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+          </span>
+        </div>
 
         {/* Confirm Password */}
-        <NoAutoFillInput
-          name="confirmPassword"
-          type="password"
-          placeholder="Confirm Password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          autoComplete="new-password"
-          required
-        />
+        <div className="relative">
+          <NoAutoFillInput
+            name="confirmPassword"
+            type={showConfirmPassword ? "text" : "password"}
+            placeholder="Confirm Password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            autoComplete="new-password"
+            className="w-full pr-10"
+            required
+          />
+
+          <span
+            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-600"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+          >
+            {showConfirmPassword ? (
+              <FaEyeSlash size={18} />
+            ) : (
+              <FaEye size={18} />
+            )}
+          </span>
+        </div>
 
         {/* Submit Button */}
         <button
           type="submit"
           disabled={loading}
           className={`w-full mt-2 py-2 rounded text-black transition-colors duration-200 ${
-            loading ? "bg-gray-400 cursor-not-allowed" : "bg-[#dee11e] hover:bg-slate-500"
+            loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-[#dee11e] hover:bg-slate-500"
           }`}
         >
           {loading ? (
@@ -173,8 +216,19 @@ function RegisterPage() {
                 fill="none"
                 viewBox="0 0 24 24"
               >
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                ></path>
               </svg>
               Registering...
             </span>
