@@ -32,6 +32,14 @@ function UserDashboard() {
   const [toast, setToast] = useState(null);
   const [errors, setErrors] = useState({});
 
+  useEffect(() => {
+    //reload code
+    const savedForm = localStorage.getItem("batteryFormData");
+    if (savedForm) {
+      setForm(JSON.parse(savedForm));
+    }
+  }, []);
+
   // Calculate duration when times change
   useEffect(() => {
     const start = form.chargeTimeInitial;
@@ -98,7 +106,7 @@ function UserDashboard() {
       if (values[key] && isNaN(Number(values[key]))) {
         e[key] = "Must be a number";
       }
-    }); 
+    });
 
     return e;
   }
@@ -111,10 +119,14 @@ function UserDashboard() {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target;   //modified for reload code
     setForm((s) => {
       const next = { ...s, [name]: value };
       setErrors(validateAll(next));
+
+      // Save to localStorage
+      localStorage.setItem("batteryFormData", JSON.stringify(next));
+
       return next;
     });
   };
@@ -138,6 +150,7 @@ function UserDashboard() {
       showToast("Submitted successfully");
       setForm(initialForm);
       setErrors({});
+      localStorage.removeItem("batteryFormData"); // clear saved draft // also modified reload code
     } catch (err) {
       console.error(err);
       showToast(err?.response?.data?.message || "Submission failed");
